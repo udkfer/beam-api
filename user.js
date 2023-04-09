@@ -24,6 +24,7 @@ async function login(username, password) {
     if (user.password !== password) {
         return { error: 'Incorrect password' };
     }
+    return user;
 }
 
 async function getAllUsers() {

@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUser, getAllUsers } = require('./user');
+const { registerUser, getAllUsers, login } = require('./user');
 
 const app = express();
 const port = 3000;

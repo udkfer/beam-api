@@ -13,6 +13,12 @@ app.post('/register', async (req, res) => {
   res.json(user);
 });
 
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body
+  const user = await login(username, password);
+  res.json(user);
+});
+
 app.get('/users', async (req, res) => {
   const users = await getAllUsers();
   res.json(users);

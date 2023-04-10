@@ -1,5 +1,6 @@
 const express = require('express');
 const { registerUser, getAllUsers } = require('./user');
+const { getMessage, sendMessage } = require('./message');
 
 const app = express();
 const port = 3000;
@@ -15,6 +16,17 @@ app.post('/register', async (req, res) => {
 app.get('/users', async (req, res) => {
   const users = await getAllUsers();
   res.json(users);
+});
+
+app.get('/messages', async (req, res) => {
+  const messages = await getMessage();
+  res.json(messages);
+});
+
+app.post('/sendMessage', async (req, res) => {
+  const { authorId, message } = req.body;
+  const response = await sendMessage(authorId, message);
+  res.json(response);
 });
 
 app.listen(port, () => {

@@ -2,6 +2,14 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function registerUser(username, name, password) {
+    const userExists = await prisma.user.findUnique({
+        where: {
+            username,
+        },
+    });
+    if (userExists) {
+        return null;
+    }
     const user = await prisma.user.create({
         data: {
             username,

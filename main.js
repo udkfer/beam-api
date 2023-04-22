@@ -1,5 +1,6 @@
 const express = require('express');
 const { registerUser, getAllUsers, login } = require('./user');
+const cors = require('cors');
 const { getMessage, sendMessage } = require('./message');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -10,6 +11,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use(cors());
 
 app.post('/register', async (req, res) => {
   const { username, name } = req.body

@@ -11,17 +11,25 @@ datasource db {
 }
 
 model User {
-  id              Int       @id @default(autoincrement())
-  username        String    @unique
-  name            String?
-  password        String
-  picture         String?
-  Message         Message[]
-  Group           Group[]
-  friends         User[]    @relation("friends")
-  friendsRelation User[]    @relation("friends")
-  from            FriendRequest[] @relation("from")
-  to              FriendRequest[] @relation("to")
+  id        Int             @id @default(autoincrement())
+  username  String          @unique
+  name      String?
+  password  String
+  picture   String?
+  friends   Friend[]        @relation("user")
+  friendsOf Friend[]        @relation("friend")
+  Message   Message[]
+  Group     Group[]
+  from      FriendRequest[] @relation("from")
+  to        FriendRequest[] @relation("to")
+}
+
+model Friend {
+  id       Int  @id @default(autoincrement())
+  user     User @relation(fields: [userId], references: [id], name: "user")
+  userId   Int
+  friend   User @relation(fields: [friendId], references: [id], name: "friend")
+  friendId Int
 }
 
 model Message {
@@ -38,11 +46,11 @@ model Group {
 }
 
 model FriendRequest {
-  id        Int    @id @default(autoincrement())
-  from      User   @relation(fields: [fromId], references: [id], name: "from")
-  fromId    Int
-  to        User   @relation(fields: [toId], references: [id], name: "to")
-  toId      Int
-  accepted  Boolean
-  recused   Boolean
+  id       Int     @id @default(autoincrement())
+  from     User    @relation(fields: [fromId], references: [id], name: "from")
+  fromId   Int
+  to       User    @relation(fields: [toId], references: [id], name: "to")
+  toId     Int
+  accepted Boolean
+  recused  Boolean
 }

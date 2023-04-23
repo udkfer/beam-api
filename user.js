@@ -41,6 +41,7 @@ async function getAllUsers() {
 }
 
 async function getFriends(id) {
+    id = parseInt(id);
     const user = await prisma.user.findUnique({
         where: {
             id,
@@ -57,6 +58,8 @@ async function getFriends(id) {
 }
 
 async function addFriend(id, friendId) {
+    id = parseInt(id);
+    friendId = parseInt(friendId);
     const user = await prisma.user.findUnique({
         where: {
             id,
@@ -101,6 +104,8 @@ async function addFriend(id, friendId) {
 }
 
 async function removeFriend(id, friendId) {
+    id = parseInt(id);
+    friendId = parseInt(friendId);
     const user = await prisma.user.findUnique({
         where: {
             id,
@@ -142,6 +147,7 @@ async function removeFriend(id, friendId) {
 }
 
 async function listFriendRequests(id) {
+    id = parseInt(id);
     const user = await prisma.user.findUnique({
         where: {
             id,

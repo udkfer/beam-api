@@ -42,20 +42,16 @@ async function getAllUsers() {
 
 async function getFriends(id) {
     id = parseInt(id);
-    const user = await prisma.user.findUnique({
+    const friends = await prisma.friend.findMany({
         where: {
-            id,
-        }
-    });
-    const friends = await prisma.user.findMany({
-        where: {
-            id: {
-                in: user.friends,
-            },
+            userId: id,
+        },
+        include: {
+            friend: true,
         },
     });
-    const filteredFriends = friends.filter((friend) => friend.id !== id);
-    return filteredFriends;
+    const friendArray = friends.map((friend) => friend.friend);
+    return friendArray;
 }
 
 async function addFriend(id, friendId) {
@@ -64,11 +60,17 @@ async function addFriend(id, friendId) {
     const user = await prisma.user.findUnique({
         where: {
             id,
+        },
+        include: {
+            friends: true,
         }
     });
     const friend = await prisma.user.findUnique({
         where: {
             id: friendId,
+        },
+        include: {
+            friends: true,
         }
     });
     if (!user || !friend) {
@@ -77,31 +79,22 @@ async function addFriend(id, friendId) {
     if (user.friends?.includes(friendId)) {
         return { error: 'User already added' };
     }
-    const updatedUser = await prisma.user.update({
-        where: {
-            id,
-        },
+    if (friend.friends?.includes(id)) {
+        return { error: 'User already added' };
+    }
+    const updatedUser = await prisma.friend.create({
         data: {
-            friends: {
-                connect: {
-                    id: friendId,
-                },
-            },
+            userId: id,
+            friendId,
         },
     });
-    const updatedFriend = await prisma.user.update({
-        where: {
-            id: friendId,
-        },
+    const updatedFriend = await prisma.friend.create({
         data: {
-            friends: {
-                connect: {
-                    id,
-                },
-            },
+            userId: friendId,
+            friendId: id,
         },
     });
-    return { updatedUser, updatedFriend };
+    return { updatedUser, updatedFriend, message: 'Friend added' };
 }
 
 async function removeFriend(id, friendId) {
@@ -110,41 +103,35 @@ async function removeFriend(id, friendId) {
     const user = await prisma.user.findUnique({
         where: {
             id,
-        }
+        },
+        include: {
+            friends: true,
+        },
     });
     const friend = await prisma.user.findUnique({
         where: {
             id: friendId,
-        }
+        },
+        include: {
+            friends: true,
+        },
     });
     if (!user || !friend) {
         return { error: 'User not found' };
     }
-    const updatedUser = await prisma.user.update({
+    const updatedUser = await prisma.friend.deleteMany({
         where: {
-            id,
-        },
-        data: {
-            friends: {
-                disconnect: {
-                    id: friendId,
-                },
-            },
+            userId: id,
+            friendId,
         },
     });
-    const updatedFriend = await prisma.user.update({
+    const updatedFriend = await prisma.friend.deleteMany({
         where: {
-            id: friendId,
-        },
-        data: {
-            friends: {
-                disconnect: {
-                    id,
-                },
-            },
+            userId: friendId,
+            friendId: id,
         },
     });
-    return { updatedUser, updatedFriend };
+    return { updatedUser, updatedFriend, message: 'Friend removed' };
 }
 
 async function listFriendRequests(id) {

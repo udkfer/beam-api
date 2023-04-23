@@ -134,29 +134,26 @@ async function removeFriend(id, friendId) {
     return { updatedUser, updatedFriend, message: 'Friend removed' };
 }
 
-async function listFriendRequests(id) {
-    id = parseInt(id);
-    const user = await prisma.user.findUnique({
-        where: {
-            id,
-        }
-    });
-    const friendRequests = await prisma.user.findMany({
-        where: {
-            id: {
-                in: user.friendRequests,
-            },
-        },
-    });
-    return friendRequests;
+async function getFriendRequests(id) {
+        id = parseInt(id);
+        const friendRequests = await prisma.friend.findMany({
+                where: {
+                        friendId: id,
+                },
+                include: {
+                        user: true,
+                },
+        });
+        const friendRequestArray = friendRequests.map((friendRequest) => friendRequest.user);
+        return friendRequestArray;
 }
 
 module.exports = {
-    registerUser,
-    login,
-    getAllUsers,
-    getFriends,
-    addFriend,
-    removeFriend,
-    listFriendRequests,
+        registerUser,
+        login,
+        getAllUsers,
+        getFriends,
+        addFriend,
+        removeFriend,
+        getFriendRequests,
 };

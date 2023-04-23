@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUser, getAllUsers, login, getFriends, getRequests, addFriend, removeFriend } = require('./user');
+const { registerUser, getAllUsers, login, getFriends, addFriend, removeFriend, getFriendRequests } = require('./user');
 const cors = require('cors');
 const { getMessage, sendMessage } = require('./message');
 const jwt = require('jsonwebtoken');
@@ -70,8 +70,8 @@ app.delete('/removeFriend/:id/:friendId', async (req, res) => {
   return res.json(friends);
 });
 
-app.get('/listRequest/:id', async (req, res) => {
+app.get('/friendRequests/:id', async (req, res) => {
   const { id } = req.params;
-  const requests = await getRequests(id);
-  return res.json(requests);
+  const friendRequests = await getFriendRequests(id);
+  return res.json(friendRequests);
 });

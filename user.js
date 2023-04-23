@@ -40,8 +40,70 @@ async function getAllUsers() {
     return users;
 }
 
+async function getFriends(id) {
+    const user = await prisma.user.findUnique({
+        where: {
+            id,
+        }
+    });
+    const friends = await prisma.user.findMany({
+        where: {
+            id: {
+                in: user.friends,
+            },
+        },
+    });
+    return friends;
+}
+
+async function addFriend(id, friendId) {
+    const user = await prisma.user.findUnique({
+        where: {
+            id,
+        }
+    });
+    const friend = await prisma.user.findUnique({
+        where: {
+            id: friendId,
+        }
+    });
+    if (!user || !friend) {
+        return { error: 'User not found' };
+    }
+    if (user.friends?.includes(friendId)) {
+        return { error: 'User already added' };
+    }
+    const updatedUser = await prisma.user.update({
+        where: {
+            id,
+        },
+        data: {
+            friends: {
+                connect: {
+                    id: friendId,
+                },
+            },
+        },
+    });
+    const updatedFriend = await prisma.user.update({
+        where: {
+            id: friendId,
+        },
+        data: {
+            friends: {
+                connect: {
+                    id,
+                },
+            },
+        },
+    });
+    return { updatedUser, updatedFriend };
+}
+
 module.exports = {
     registerUser,
     login,
     getAllUsers,
+    getFriends,
+    addFriend,
 };

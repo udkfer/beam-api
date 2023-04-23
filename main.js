@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUser, getAllUsers, login, getFriends, getRequests } = require('./user');
+const { registerUser, getAllUsers, login, getFriends, getRequests, addFriend } = require('./user');
 const cors = require('cors');
 const { getMessage, sendMessage } = require('./message');
 const jwt = require('jsonwebtoken');
@@ -52,14 +52,14 @@ app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
 
-app.get ('/friends', async (req, res) => {
+app.get('/friends', async (req, res) => {
   const { id } = req.body;
   const friends = await getFriends(id);
   return res.json(friends);
 });
 
-app.get('/requests', async (req, res) => {
-  const { id } = req.body;
-  const requests = await getRequests(id);
-  return res.json(requests);
-}
+app.post('/addFriend', async (req, res) => {
+  const { id, friendId } = req.body;
+  const friends = await addFriend(id, friendId);
+  return res.json(friends);
+})

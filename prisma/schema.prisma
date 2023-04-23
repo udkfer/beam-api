@@ -44,4 +44,5 @@ model FriendRequest {
   to        User   @relation(fields: [toId], references: [id], name: "to")
   toId      Int
   accepted  Boolean
+  recused   Boolean
 }

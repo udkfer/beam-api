@@ -54,7 +54,8 @@ async function getFriends(id) {
             },
         },
     });
-    return friends;
+    const filteredFriends = friends.filter((friend) => friend.id !== id);
+    return filteredFriends;
 }
 
 async function addFriend(id, friendId) {

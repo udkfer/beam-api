@@ -52,26 +52,26 @@ app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
 
-app.get('/friends', async (req, res) => {
-  const { id } = req.body;
+app.get('/friends/:id', async (req, res) => {
+  const { id } = req.params;
   const friends = await getFriends(id);
   return res.json(friends);
 });
 
-app.post('/addFriend', async (req, res) => {
-  const { id, friendId } = req.body;
+app.post('/addFriend/:id/:friendId', async (req, res) => {
+  const { id, friendId } = req.params;
   const friends = await addFriend(id, friendId);
   return res.json(friends);
 });
 
-app.delete('/removeFriend', async (req, res) => {
-  const { id, friendId } = req.body;
+app.delete('/removeFriend/:id/:friendId', async (req, res) => {
+  const { id, friendId } = req.params;
   const friends = await removeFriend(id, friendId);
   return res.json(friends);
 });
 
-app.get('/listRequest', async (req, res) => {
-  const { id } = req.body;
+app.get('/listRequest/:id', async (req, res) => {
+  const { id } = req.params;
   const requests = await getRequests(id);
   return res.json(requests);
 });
